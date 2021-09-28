@@ -9,14 +9,25 @@ from src import login_ui
 from login_ui import Ui_login_dialog
 from admin_ui import Ui_Dialog
 
+
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
-        self.ui = Ui_login_dialog()
-        self.ui.setupUi(self)
 
-        # Button
-        self.ui.login_button.clicked.connect(self.to_admin)
+        self.to_login()
+
+        self.set_connections()
+
+    def to_login(self):
+        self.login_window = login_ui.QtWidgets.QDialog()
+        self.login_ui = Ui_login_dialog()
+        self.login_ui.setupUi(self.login_window)
+        self.login_window.show()
+
+        self.current_window = self.login_window
+
+    def set_connections(self):
+        self.login_ui.login_button.clicked.connect(self.to_admin)
 
     def to_admin(self):
         self.admin_window = admin_ui.QtWidgets.QDialog()
@@ -24,15 +35,19 @@ class MainWindow(QtWidgets.QMainWindow):
         ad_ui.setupUi(self.admin_window)
         self.admin_window.show()
 
+        self.current_window.hide()
+        self.current_window = self.admin_window
+
         # self.ui2 = Ui_Dialog()
         # self.ui2.setupUi(self)
 
     def to_users(self):
         pass
 
+
 if __name__ == "__main__":
     app = QtWidgets.QApplication([])
     window = MainWindow()
-    window.show()
+    # window.show()
     # window.showMaximized()
     app.exec_()
