@@ -48,9 +48,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.login_ui.login_button.clicked.connect(self.to_admin)
 
 
-if __name__ == "__main__":
+def main():
     app = QtWidgets.QApplication([])
     window = MainWindow()
     # window.show()
     # window.showMaximized()
     app.exec_()
+
+
+if __name__ == "__main__":
+    main()
