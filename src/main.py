@@ -1,6 +1,7 @@
 from PyQt5 import QtWidgets
 
 from login_ui import Ui_login_dialog
+from signup_ui import Ui_signup_dialog
 from src import admin_ui
 from src import login_ui
 
@@ -15,8 +16,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.current_window = None
         self.to_login()
 
-        self.set_connections()
-
     def change_window(self, new_window):
         if self.current_window is not None:
             self.current_window.hide()
@@ -29,7 +28,25 @@ class MainWindow(QtWidgets.QMainWindow):
         self.login_ui = Ui_login_dialog()
         self.login_ui.setupUi(login_window)
 
+        self.login_ui.login_button.clicked.connect(self.make_login)
+        self.login_ui.sign_up_button.clicked.connect(self.to_signup)
+
         self.change_window(login_window)
+
+    def make_login(self):
+        self.to_admin()
+
+    def to_signup(self):
+        signup_window = QtWidgets.QMainWindow()
+        self.signup_ui = Ui_signup_dialog()
+        self.signup_ui.setupUi(signup_window)
+
+        self.signup_ui.signup_button.clicked.connect(self.make_signup)
+
+        self.change_window(signup_window)
+
+    def make_signup(self):
+        pass
 
     def to_admin(self):
         admin_window = QtWidgets.QMainWindow()
@@ -43,9 +60,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def to_users(self):
         pass
-
-    def set_connections(self):
-        self.login_ui.login_button.clicked.connect(self.to_admin)
 
 
 def main():

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>sign_up_dialog</class>
- <widget class="QDialog" name="sign_up_dialog">
+ <class>signup_dialog</class>
+ <widget class="QDialog" name="signup_dialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -126,7 +126,7 @@
      <string>Email</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="sign_up_button">
+   <widget class="QPushButton" name="signup_button">
     <property name="geometry">
      <rect>
       <x>150</x>
