@@ -40,7 +40,7 @@
      <x>190</x>
      <y>130</y>
      <width>381</width>
-     <height>361</height>
+     <height>391</height>
     </rect>
    </property>
    <property name="minimumSize">
@@ -64,7 +64,7 @@
    <property name="frameShadow">
     <enum>QFrame::Plain</enum>
    </property>
-   <widget class="QLineEdit" name="name_lineEdit">
+   <widget class="QLineEdit" name="username_lineEdit">
     <property name="geometry">
      <rect>
       <x>170</x>
@@ -81,7 +81,7 @@
     <property name="geometry">
      <rect>
       <x>170</x>
-      <y>160</y>
+      <y>200</y>
       <width>171</width>
       <height>20</height>
      </rect>
@@ -90,7 +90,7 @@
      <string>Please enter your email</string>
     </property>
    </widget>
-   <widget class="QLabel" name="name_label">
+   <widget class="QLabel" name="username_label">
     <property name="geometry">
      <rect>
       <x>60</x>
@@ -105,14 +105,14 @@
      </font>
     </property>
     <property name="text">
-     <string>Name</string>
+     <string>Username</string>
     </property>
    </widget>
    <widget class="QLabel" name="email_label">
     <property name="geometry">
      <rect>
       <x>60</x>
-      <y>160</y>
+      <y>200</y>
       <width>81</width>
       <height>21</height>
      </rect>
@@ -130,7 +130,7 @@
     <property name="geometry">
      <rect>
       <x>150</x>
-      <y>300</y>
+      <y>330</y>
       <width>71</width>
       <height>31</height>
      </rect>
@@ -148,7 +148,7 @@
     <property name="geometry">
      <rect>
       <x>60</x>
-      <y>200</y>
+      <y>280</y>
       <width>101</width>
       <height>21</height>
      </rect>
@@ -166,7 +166,7 @@
     <property name="geometry">
      <rect>
       <x>170</x>
-      <y>200</y>
+      <y>280</y>
       <width>171</width>
       <height>20</height>
      </rect>
@@ -225,6 +225,37 @@
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="passwd_lineEdit">
+    <property name="geometry">
+     <rect>
+      <x>170</x>
+      <y>160</y>
+      <width>171</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="placeholderText">
+     <string>Please enter your password</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="passwd_label">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>160</y>
+      <width>81</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>11</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Password</string>
     </property>
    </widget>
   </widget>
