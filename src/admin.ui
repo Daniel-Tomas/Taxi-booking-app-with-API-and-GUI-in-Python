@@ -81,7 +81,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Taxi list</string>
+     <string>Taxies </string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>

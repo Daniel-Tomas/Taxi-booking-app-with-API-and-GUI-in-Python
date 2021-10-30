@@ -88,7 +88,7 @@ class Ui_admin_dialog(object):
     def retranslateUi(self, admin_dialog):
         _translate = QtCore.QCoreApplication.translate
         admin_dialog.setWindowTitle(_translate("admin_dialog", "Admin Access"))
-        self.list_label.setText(_translate("admin_dialog", "Taxi list"))
+        self.list_label.setText(_translate("admin_dialog", "Taxies "))
         self.label_status.setText(_translate("admin_dialog", "Estado"))
         self.label_location.setText(_translate("admin_dialog", "Ubicacion"))
         self.label_destination.setText(_translate("admin_dialog", "Destino"))

@@ -40,12 +40,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.login_ui = Ui_login_dialog()
         self.login_ui.setupUi(self.login_window)
 
-        self.login_ui.login_button.clicked.connect(self.make_login)
+        self.login_ui.login_button.clicked.connect(self.login_logic)
         self.login_ui.sign_up_button.clicked.connect(self.to_signup)
 
         self.change_window(self.login_window)
 
-    def make_login(self):
+    def login_logic(self):
         username = self.login_ui.username_lineEdit.text()
         passwd = self.login_ui.passwd_lineEdit.text()
 
@@ -68,11 +68,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.signup_ui = Ui_signup_dialog()
         self.signup_ui.setupUi(signup_window)
 
-        self.signup_ui.signup_button.clicked.connect(self.make_signup)
+        self.signup_ui.signup_button.clicked.connect(self.signup_logic)
 
         self.change_window(signup_window)
 
-    def make_signup(self):
+    def signup_logic(self):
         username = self.signup_ui.username_lineEdit.text()
         passwd = self.signup_ui.passwd_lineEdit.text()
         email = self.signup_ui.email_lineEdit.text()
@@ -90,13 +90,35 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def to_admin(self):
         admin_window = QtWidgets.QMainWindow()
-        ad_ui = Ui_admin_dialog()
-        ad_ui.setupUi(admin_window)
+        self.admin_ui = Ui_admin_dialog()
+        self.admin_ui.setupUi(admin_window)
+
+        self.admin_logic()
 
         self.change_window(admin_window)
 
-        # self.ui2 = Ui_Dialog()
-        # self.ui2.setupUi(self)
+    def admin_logic(self):
+        get_resp = requests.get(f'{self.base_url}/taxies/')
+        self.taxies = get_resp.json()
+
+        self.admin_ui.taxi_listWidget.setAlternatingRowColors(True)
+
+        for taxi in self.taxies:
+            taxi_item = QtWidgets.QListWidgetItem(taxi['name'], self.admin_ui.taxi_listWidget)
+            taxi_state = 'Libre' if taxi['is_free'] is True else 'Ocupado'
+            taxi_item.setToolTip(taxi_state)
+
+        self.admin_ui.taxi_listWidget.itemClicked.connect(self.show_taxi_info)
+
+    def show_taxi_info(self):
+        taxi_name = self.admin_ui.taxi_listWidget.currentItem().text()
+        for taxi in self.taxies:
+            if taxi['name'] == taxi_name:
+                taxi_state = 'Libre' if taxi['is_free'] is True else 'Ocupado'
+                self.admin_ui.label_status_response.setText(taxi_state)
+                self.admin_ui.label_location_response.setText(taxi['actual'])
+                self.admin_ui.label_destination_response.setText(taxi['destination'])
+                break
 
     def to_users(self):
         print('in users')
