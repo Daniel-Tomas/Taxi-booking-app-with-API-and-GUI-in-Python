@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Users</class>
- <widget class="QDialog" name="Users">
+ <class>users_dialog</class>
+ <widget class="QDialog" name="users_dialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -106,7 +106,7 @@
           </font>
          </property>
          <property name="text">
-          <string>Beginning</string>
+          <string>Origin</string>
          </property>
          <property name="wordWrap">
           <bool>false</bool>
@@ -117,7 +117,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="username_lineEdit_9">
+        <widget class="QLineEdit" name="origin_lineEdit">
          <property name="placeholderText">
           <string>Please enter the beginning</string>
          </property>
@@ -158,7 +158,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="username_lineEdit_10">
+        <widget class="QLineEdit" name="destination_lineEdit">
          <property name="placeholderText">
           <string>Please enter the destination</string>
          </property>
@@ -199,7 +199,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="username_lineEdit_4">
+        <widget class="QLineEdit" name="date_lineEdit">
          <property name="placeholderText">
           <string>Please enter the estimated date</string>
          </property>
@@ -240,7 +240,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="username_lineEdit_2">
+        <widget class="QLineEdit" name="time_lineEdit">
          <property name="placeholderText">
           <string>Please enter the aproximate time</string>
          </property>
@@ -249,7 +249,7 @@
       </layout>
      </item>
      <item>
-      <widget class="QPushButton" name="login_button">
+      <widget class="QPushButton" name="request_button">
        <property name="enabled">
         <bool>true</bool>
        </property>
@@ -359,7 +359,7 @@
         <string notr="true"/>
        </property>
        <property name="text">
-        <string>Accept</string>
+        <string>Request</string>
        </property>
        <property name="iconSize">
         <size>

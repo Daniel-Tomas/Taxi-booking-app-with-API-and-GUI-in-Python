@@ -1,10 +1,11 @@
 from PyQt5 import QtWidgets
 import requests
 
-from admin_ui import Ui_admin_dialog
 from login_ui import Ui_login_dialog
 from signup_ui import Ui_signup_dialog
 from msg_dialog_ui import Ui_msg_dialog
+from admin_ui import Ui_admin_dialog
+from users_ui import Ui_users_dialog
 
 
 # import src.admin_ui
@@ -40,6 +41,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.login_ui = Ui_login_dialog()
         self.login_ui.setupUi(self.login_window)
 
+        self.login_ui.passwd_lineEdit.setEchoMode(QtWidgets.QLineEdit.Password)
+
         self.login_ui.login_button.clicked.connect(self.login_logic)
         self.login_ui.sign_up_button.clicked.connect(self.to_signup)
 
@@ -54,6 +57,7 @@ class MainWindow(QtWidgets.QMainWindow):
             if username == 'admin':
                 self.to_admin()
             else:
+                self.username_logged_in = username
                 self.to_users()
         else:  # user not exists, password incorrect, or need to confirm via email
             get_resp = requests.get(f'{self.base_url}/users/{username}')
@@ -68,6 +72,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.signup_ui = Ui_signup_dialog()
         self.signup_ui.setupUi(signup_window)
 
+        self.signup_ui.passwd_lineEdit.setEchoMode(QtWidgets.QLineEdit.Password)
         self.signup_ui.signup_button.clicked.connect(self.signup_logic)
 
         self.change_window(signup_window)
@@ -121,7 +126,35 @@ class MainWindow(QtWidgets.QMainWindow):
                 break
 
     def to_users(self):
-        print('in users')
+        users_window = QtWidgets.QMainWindow()
+        self.users_ui = Ui_users_dialog()
+        self.users_ui.setupUi(users_window)
+
+        self.users_ui.request_button.clicked.connect(self.users_logic)
+
+        self.change_window(users_window)
+
+    def users_logic(self):
+
+        def empty_users_fields(self):
+            self.users_ui.origin_lineEdit.setText('')
+            self.users_ui.destination_lineEdit.setText('')
+            self.users_ui.date_lineEdit.setText('')
+            self.users_ui.time_lineEdit.setText('')
+
+        origin = self.users_ui.origin_lineEdit.text()
+        destination = self.users_ui.destination_lineEdit.text()
+        date = self.users_ui.date_lineEdit.text()
+        time = self.users_ui.time_lineEdit.text()
+        body = {'origin': origin, 'date': date, 'time': time,
+                'destination': destination}
+
+        post_resp = requests.post(f'{self.base_url}/users/{self.username_logged_in}/requests', json=body)
+        if post_resp.status_code == 201:
+            empty_users_fields(self)
+            print('request made')
+        elif post_resp.status_code == 503:
+            self.show_msg_dialog('There are no free taxies')
 
 
 def main():
