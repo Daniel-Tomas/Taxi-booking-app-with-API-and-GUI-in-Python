@@ -102,6 +102,46 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.change_window(admin_window)
 
+        #        import socket
+        #
+        #        HOST = '127.0.0.1'  # Standard loopback interface address (localhost)
+        #        PORT = 65432  # Port to listen on (non-privileged ports are > 1023)
+        #
+        #        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        #            s.bind((HOST, PORT))
+        #            s.listen()
+        #            conn, addr = s.accept()
+        #            with conn:
+        #                print('Connected by', addr)
+        #                data = conn.recv(1024)
+        #                print(data)
+        #                conn.sendall(b'taxi request response')
+        import asyncio
+
+        async def handle_echo(reader, writer):
+            data = await reader.read(100)
+            message = data.decode()
+            addr = writer.get_extra_info('peername')
+
+            print(f"Received {message!r} from {addr!r}")
+
+            print(f"Send: {message!r}")
+            writer.write(data)
+            await writer.drain()
+
+            print("Close the connection")
+            writer.close()
+
+        async def main():
+            server = await asyncio.start_server(
+                handle_echo, '127.0.0.1', 8080)
+
+            addrs = ', '.join(str(sock.getsockname()) for sock in server.sockets)
+            print(f'Serving on {addrs}')
+
+
+        asyncio.run(main())
+
     def admin_logic(self):
         get_resp = requests.get(f'{self.base_url}/taxies/')
         self.taxies = get_resp.json()
