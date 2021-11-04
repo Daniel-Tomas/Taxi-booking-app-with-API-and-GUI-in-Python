@@ -1,5 +1,7 @@
 from PyQt5 import QtWidgets
+from PyQt5.QtCore import QObject, QThread, pyqtSignal
 import requests
+import asyncio
 
 from login_ui import Ui_login_dialog
 from signup_ui import Ui_signup_dialog
@@ -10,8 +12,70 @@ from users_ui import Ui_users_dialog
 
 # import src.admin_ui
 
+class ServerWorker(QObject):
+    # finished = pyqtSignal()
+    taxi_name_sgn = pyqtSignal(str, object)
+
+
+    def run(self):
+        #  SYNCHRONOUS VERSION (TO UNDERSTAND IT EASILY)
+        #
+        #        HOST = '127.0.0.1'  # Standard loopback interface address (localhost)
+        #        PORT = 65432  # Port to listen on (non-privileged ports are > 1023)
+        #
+        #        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        #            s.bind((HOST, PORT))
+        #            s.listen()
+        #            conn, addr = s.accept()
+        #            with conn:
+        #                print('Connected by', addr)
+        #                data = conn.recv(1024)
+        #                print(data)
+        #                conn.sendall(b'taxi request response')
+        async def handle_echo(reader, writer):
+            data = await reader.read(100)
+            taxi_name = data.decode()
+            addr = writer.get_extra_info('peername')
+
+            print(f"Received {taxi_name!r} from {addr!r}")
+
+            # self.writer_conn = writer
+
+            self.taxi_name_sgn.emit(taxi_name, writer)
+
+            # print(f"Send: {taxi_name!r}")
+            # writer.write(data)
+            # await writer.drain()
+            #
+            # print("Close the connection")
+            # writer.close()
+
+        async def main():
+            server = await asyncio.start_server(
+                handle_echo, '127.0.0.1', 8080)
+
+            addrs = ', '.join(str(sock.getsockname()) for sock in server.sockets)
+            print(f'Serving on {addrs}')
+
+            async with server:
+                await server.serve_forever()
+
+        asyncio.run(main())
+        # self.finished.emit()
+
+    # async def send_admin_response(self, accepted):
+    #
+    #     print(f"Send: {accepted!r}")
+    #     self.writer_conn.write(f'{accepted}'.encode())
+    #     await self.writer_conn.drain()
+    #
+    #     print("Close the connection")
+    #     self.writer_conn.close()
+
 
 class MainWindow(QtWidgets.QMainWindow):
+    admin_response_sgn = pyqtSignal(str)
+
     def __init__(self):
         super().__init__()
 
@@ -102,45 +166,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.change_window(admin_window)
 
-        #        import socket
-        #
-        #        HOST = '127.0.0.1'  # Standard loopback interface address (localhost)
-        #        PORT = 65432  # Port to listen on (non-privileged ports are > 1023)
-        #
-        #        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        #            s.bind((HOST, PORT))
-        #            s.listen()
-        #            conn, addr = s.accept()
-        #            with conn:
-        #                print('Connected by', addr)
-        #                data = conn.recv(1024)
-        #                print(data)
-        #                conn.sendall(b'taxi request response')
-        import asyncio
-
-        async def handle_echo(reader, writer):
-            data = await reader.read(100)
-            message = data.decode()
-            addr = writer.get_extra_info('peername')
-
-            print(f"Received {message!r} from {addr!r}")
-
-            print(f"Send: {message!r}")
-            writer.write(data)
-            await writer.drain()
-
-            print("Close the connection")
-            writer.close()
-
-        async def main():
-            server = await asyncio.start_server(
-                handle_echo, '127.0.0.1', 8080)
-
-            addrs = ', '.join(str(sock.getsockname()) for sock in server.sockets)
-            print(f'Serving on {addrs}')
-
-
-        asyncio.run(main())
+        self.start_admin_server_thread()
 
     def admin_logic(self):
         get_resp = requests.get(f'{self.base_url}/taxies/')
@@ -154,6 +180,44 @@ class MainWindow(QtWidgets.QMainWindow):
             taxi_item.setToolTip(taxi_state)
 
         self.admin_ui.taxi_listWidget.itemClicked.connect(self.show_taxi_info)
+
+    def start_admin_server_thread(self):
+        self.thread = QThread()
+        self.worker = ServerWorker()
+
+        self.worker.moveToThread(self.thread)
+
+        self.thread.started.connect(self.worker.run)
+        # self.worker.finished.connect(self.thread.quit)
+        # self.worker.finished.connect(self.worker.deleteLater)
+        # self.thread.finished.connect(self.thread.deleteLater)
+        self.worker.taxi_name_sgn.connect(self.ask_req_admin)
+        # self.admin_response_sgn.connect(self.worker.send_admin_response)
+
+        self.thread.start()
+
+        # # Final resets
+        # self.longRunningBtn.setEnabled(False)
+        # self.thread.finished.connect(
+        #     lambda: self.longRunningBtn.setEnabled(True)
+        # )
+        # self.thread.finished.connect(
+        #     lambda: self.stepLabel.setText("Long-Running Step: 0")
+        # )
+
+
+    def ask_req_admin(self, taxi_name, writer):
+        self.show_msg_dialog(f'The taxi "{taxi_name}" has been requested')
+        self.show_admin_dialog(f'The taxi "{taxi_name}" has been requested')
+        # self.admin_response_sgn.emit('True')
+
+        accepted = True
+        print(f"Send: {accepted!r}")
+        writer.write(f'{accepted}'.encode())
+        # writer.drain()
+
+        print("Close the connection")
+        writer.close()
 
     def show_taxi_info(self):
         taxi_name = self.admin_ui.taxi_listWidget.currentItem().text()
