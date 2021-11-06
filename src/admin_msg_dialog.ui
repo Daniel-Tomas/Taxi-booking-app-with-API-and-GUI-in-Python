@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>msg_dialog</class>
- <widget class="QDialog" name="msg_dialog">
+ <class>admin_msg_dialog</class>
+ <widget class="QDialog" name="admin_msg_dialog">
   <property name="geometry">
    <rect>
     <x>0</x>

@@ -6,6 +6,7 @@ import asyncio
 from login_ui import Ui_login_dialog
 from signup_ui import Ui_signup_dialog
 from msg_dialog_ui import Ui_msg_dialog
+from admin_msg_dialog_ui import Ui_admin_msg_dialog
 from admin_ui import Ui_admin_dialog
 from users_ui import Ui_users_dialog
 
@@ -15,7 +16,6 @@ from users_ui import Ui_users_dialog
 class ServerWorker(QObject):
     # finished = pyqtSignal()
     taxi_name_sgn = pyqtSignal(str, object)
-
 
     def run(self):
         #  SYNCHRONOUS VERSION (TO UNDERSTAND IT EASILY)
@@ -169,17 +169,20 @@ class MainWindow(QtWidgets.QMainWindow):
         self.start_admin_server_thread()
 
     def admin_logic(self):
-        get_resp = requests.get(f'{self.base_url}/taxies/')
-        self.taxies = get_resp.json()
+        self.update_taxies_list()
 
         self.admin_ui.taxi_listWidget.setAlternatingRowColors(True)
+        self.admin_ui.taxi_listWidget.itemClicked.connect(self.show_taxi_info)
+
+    def update_taxies_list(self):
+        self.admin_ui.taxi_listWidget.clear()
+        get_resp = requests.get(f'{self.base_url}/taxies/')
+        self.taxies = get_resp.json()
 
         for taxi in self.taxies:
             taxi_item = QtWidgets.QListWidgetItem(taxi['name'], self.admin_ui.taxi_listWidget)
             taxi_state = 'Libre' if taxi['is_free'] is True else 'Ocupado'
             taxi_item.setToolTip(taxi_state)
-
-        self.admin_ui.taxi_listWidget.itemClicked.connect(self.show_taxi_info)
 
     def start_admin_server_thread(self):
         self.thread = QThread()
@@ -205,19 +208,44 @@ class MainWindow(QtWidgets.QMainWindow):
         #     lambda: self.stepLabel.setText("Long-Running Step: 0")
         # )
 
-
     def ask_req_admin(self, taxi_name, writer):
-        self.show_msg_dialog(f'The taxi "{taxi_name}" has been requested')
+        self.writer = writer
+
         self.show_admin_dialog(f'The taxi "{taxi_name}" has been requested')
+
         # self.admin_response_sgn.emit('True')
 
-        accepted = True
+    def show_admin_dialog(self, msg):
+        self.admin_msg_dialog = QtWidgets.QDialog()
+        self.admin_msg_dialog_ui = Ui_admin_msg_dialog()
+        self.admin_msg_dialog_ui.setupUi(self.admin_msg_dialog)
+
+        self.admin_msg_dialog_ui.accept_button.clicked.connect(self.process_accept_resp_admin)
+        self.admin_msg_dialog_ui.decline_button.clicked.connect(self.process_decline_resp_admin)
+
+        self.admin_msg_dialog_ui.msg_label.setText(msg)
+
+        self.admin_msg_dialog.show()
+
+    def process_accept_resp_admin(self):
+        self.process_resp_admin(True)
+        self.update_taxies_list()
+
+    def process_decline_resp_admin(self):
+        self.process_resp_admin(False)
+
+    def process_resp_admin(self, resp):
+
+        accepted = resp
         print(f"Send: {accepted!r}")
-        writer.write(f'{accepted}'.encode())
+        self.writer.write(f'{accepted}'.encode())
         # writer.drain()
 
         print("Close the connection")
-        writer.close()
+        self.writer.close()
+
+        self.admin_msg_dialog.hide()
+        self.show_msg_dialog('The response has been processed successfully')
 
     def show_taxi_info(self):
         taxi_name = self.admin_ui.taxi_listWidget.currentItem().text()
@@ -256,7 +284,9 @@ class MainWindow(QtWidgets.QMainWindow):
         post_resp = requests.post(f'{self.base_url}/users/{self.username_logged_in}/requests', json=body)
         if post_resp.status_code == 201:
             empty_users_fields(self)
-            print('request made')
+            self.show_msg_dialog('Request accepted')
+        elif post_resp.status_code == 403:
+            self.show_msg_dialog('Request declined')
         elif post_resp.status_code == 503:
             self.show_msg_dialog('There are no free taxies')
 
