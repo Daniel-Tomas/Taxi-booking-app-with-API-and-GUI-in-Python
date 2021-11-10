@@ -1,0 +1,43 @@
+from sqlalchemy.orm import sessionmaker
+from faker import Faker
+from app.database import engine
+from app.models import *
+from datetime import datetime
+
+session = sessionmaker(engine)()
+fake = Faker("es_ES")
+
+users = ['a', 'b', 'c', 'd', 'e', 'f']
+taxies = ['g', 'h', 'i', 'j', 'k', 'l']
+
+
+def reset_all():
+    session.query(User).delete()
+    session.query(Taxi).delete()
+    session.commit()
+
+
+def create_users():
+    for name in users:
+        user = User(nickname=name, email=fake.email(), pay_method="tarjeta",
+                    phone_number=fake.phone_number(), password=fake.password(), is_active=True)
+        session.add(user)
+
+    admin = User(nickname="admin", email=fake.email(), pay_method="tarjeta",
+                 phone_number=fake.phone_number(), password='admin', is_active=True)
+    session.add(admin)
+
+    session.commit()
+
+
+def create_taxies():
+    for name in taxies:
+        taxi = Taxi(name=name, is_free=True,
+                    actual="madrid", destination="barcelona")
+        session.add(taxi)
+    session.commit()
+
+
+reset_all()
+create_users()
+create_taxies()
