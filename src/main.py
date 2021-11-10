@@ -126,7 +126,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 break
 
     def to_users(self):
-        ...
+        self.show_msg_dialog('User logged in successfully')
 
 
 def main():
