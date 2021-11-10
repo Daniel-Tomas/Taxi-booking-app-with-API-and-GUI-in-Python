@@ -7,8 +7,8 @@ from datetime import datetime
 session = sessionmaker(engine)()
 fake = Faker("es_ES")
 
-users = ['a', 'b', 'c', 'd', 'e', 'f']
-taxies = ['g', 'h', 'i', 'j', 'k', 'l']
+users = ['julio69', 'XxPacoxX', 'luisito', 'albertoCR7']
+taxies = ['taxi_seguro', 'taxi_barato', 'taxi_de_aurelio', 'taxi_tesla']
 
 
 def reset_all():
