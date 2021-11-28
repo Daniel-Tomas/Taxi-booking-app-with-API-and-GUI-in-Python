@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>msg_dialog</class>
- <widget class="QDialog" name="msg_dialog">
+ <class>admin_download_dialog</class>
+ <widget class="QDialog" name="admin_download_dialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>354</width>
-    <height>264</height>
+    <width>400</width>
+    <height>300</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Warning</string>
+   <string>Download</string>
   </property>
   <property name="windowIcon">
    <iconset>
@@ -36,25 +36,43 @@
     <pixmap>../images/background users.jpg</pixmap>
    </property>
   </widget>
-  <widget class="QLabel" name="msg_label">
+  <widget class="QPushButton" name="cancel_button">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>110</y>
-     <width>331</width>
-     <height>51</height>
+     <x>220</x>
+     <y>220</y>
+     <width>75</width>
+     <height>23</height>
     </rect>
    </property>
-   <property name="font">
-    <font>
-     <pointsize>14</pointsize>
-    </font>
+   <property name="text">
+    <string>Cancel</string>
+   </property>
+  </widget>
+  <widget class="QProgressBar" name="progressBar">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>130</y>
+     <width>281</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="value">
+    <number>24</number>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="start_button">
+   <property name="geometry">
+    <rect>
+     <x>80</x>
+     <y>220</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
    </property>
    <property name="text">
-    <string/>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignCenter</set>
+    <string>Start</string>
    </property>
   </widget>
  </widget>

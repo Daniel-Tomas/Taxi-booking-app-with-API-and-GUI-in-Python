@@ -3,6 +3,25 @@ from pydantic import BaseModel
 from datetime import date, time
 
 
+class RequestBase(BaseModel):
+    date: date
+    time: time
+    origin: str
+    destination: str
+
+
+class RequestCreate(RequestBase):
+    pass
+
+
+class Request(RequestBase):
+    taxi_name: str
+    user_nickname: str
+
+    class Config:
+        orm_mode = True
+
+
 class UserBase(BaseModel):
     nickname: str
     email: str

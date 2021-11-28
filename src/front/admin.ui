@@ -54,7 +54,7 @@
      <x>150</x>
      <y>80</y>
      <width>450</width>
-     <height>471</height>
+     <height>511</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -216,6 +216,19 @@
       </widget>
      </item>
     </layout>
+   </widget>
+   <widget class="QPushButton" name="download_button">
+    <property name="geometry">
+     <rect>
+      <x>155</x>
+      <y>460</y>
+      <width>141</width>
+      <height>34</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Download history</string>
+    </property>
    </widget>
   </widget>
  </widget>

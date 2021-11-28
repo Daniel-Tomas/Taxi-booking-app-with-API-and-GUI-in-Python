@@ -24,7 +24,7 @@ class Ui_admin_dialog(object):
         self.background_img_label.setPixmap(QtGui.QPixmap("../images/background users.jpg"))
         self.background_img_label.setObjectName("background_img_label")
         self.admin_frame = QtWidgets.QFrame(admin_dialog)
-        self.admin_frame.setGeometry(QtCore.QRect(150, 80, 450, 471))
+        self.admin_frame.setGeometry(QtCore.QRect(150, 80, 450, 511))
         self.admin_frame.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.admin_frame.setFrameShape(QtWidgets.QFrame.Panel)
         self.admin_frame.setFrameShadow(QtWidgets.QFrame.Plain)
@@ -81,6 +81,9 @@ class Ui_admin_dialog(object):
         self.label_destination.setGeometry(QtCore.QRect(0, 0, 60, 30))
         self.label_destination.setObjectName("label_destination")
         self.verticalLayout.addWidget(self.frame_destination)
+        self.download_button = QtWidgets.QPushButton(self.admin_frame)
+        self.download_button.setGeometry(QtCore.QRect(155, 460, 141, 34))
+        self.download_button.setObjectName("download_button")
 
         self.retranslateUi(admin_dialog)
         QtCore.QMetaObject.connectSlotsByName(admin_dialog)
@@ -92,4 +95,5 @@ class Ui_admin_dialog(object):
         self.label_status.setText(_translate("admin_dialog", "Estado"))
         self.label_location.setText(_translate("admin_dialog", "Ubicacion"))
         self.label_destination.setText(_translate("admin_dialog", "Destino"))
+        self.download_button.setText(_translate("admin_dialog", "Download history"))
 

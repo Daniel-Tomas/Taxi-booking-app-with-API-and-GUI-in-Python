@@ -66,6 +66,39 @@ async def get_taxi(taxi_name: str, db: Session = Depends(get_db)):
     return db_taxi
 
 
+def send_req_to_admin(taxi_name: str) -> str:
+    import socket
+    HOST = '127.0.0.1'  # The server's hostname or IP address
+    PORT = 8080  # The port used by the server
+
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((HOST, PORT))
+        print('connected')
+        s.sendall(f'{taxi_name}'.encode())
+        print('sended')
+        data = s.recv(1024)
+
+    print('Received', repr(data))
+    return data
+
+
+@app.post("/users/{user_nickname}/requests", status_code=201, response_model=schemas.Request)
+async def create_request(user_nickname: str, request: schemas.RequestCreate, db: Session = Depends(get_db)):
+    db_taxies = crud.get_free_taxies(db)
+    if db_taxies == []:
+        raise HTTPException(status_code=503, detail="No free taxies")
+
+    db_taxi = random.choice(db_taxies)
+    taxi_name = db_taxi.name
+
+    resp = send_req_to_admin(taxi_name)
+    if resp == b'False':
+        raise HTTPException(status_code=403, detail="Request declined")
+
+    crud.update_taxi_status(db, taxi_name, False)
+    return crud.create_request(db, request, user_nickname, taxi_name)
+
+
 @app.get("/users/{user_nickname}/validation", response_class=HTMLResponse)
 async def update_validation(user_nickname: str, db: Session = Depends(get_db)):
     crud.update_validation(db, user_nickname)
@@ -92,6 +125,11 @@ async def login(user_nickname: str, login: schemas.Login, db: Session = Depends(
             status_code=401, detail="Incorrect password")
 
     return Response(status_code=200)
+
+
+@app.get("/requests/", response_model=List[schemas.Request])
+async def get_requests(date: Optional[date] = Query(datetime.now().date()), db: Session = Depends(get_db)):
+    return crud.get_requests(db, date=date)
 
 
 def send_notification(email: str, user_nickname: str):

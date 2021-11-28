@@ -50,3 +50,16 @@ def update_taxi_status(db: Session, taxi_name: str, status: bool):
     db.query(models.Taxi).filter(models.Taxi.name ==
                                  taxi_name).update({models.Taxi.is_free: status})
     db.commit()
+
+
+def create_request(db: Session, request: schemas.RequestCreate, user_nickname: str, taxi_name: str):
+    db_request = models.Request(
+        **request.dict(), user_nickname=user_nickname, taxi_name=taxi_name)
+    db.add(db_request)
+    db.commit()
+    db.refresh(db_request)
+    return db_request
+
+
+def get_requests(db: Session, date: date):
+    return db.query(models.Request).filter(models.Request.date <= date).order_by(models.Request.date).all()

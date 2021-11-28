@@ -11,6 +11,7 @@ sqlalchemy = "*"
 faker = "*"
 pyqt5 = "*"
 requests = "*"
+pyyaml = "*"
 
 [dev-packages]
 autopep8 = "*"

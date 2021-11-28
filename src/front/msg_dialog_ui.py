@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_msg_dialog(object):
     def setupUi(self, msg_dialog):
         msg_dialog.setObjectName("msg_dialog")
-        msg_dialog.resize(400, 300)
+        msg_dialog.resize(354, 264)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap("../images/app-logo.jpg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         msg_dialog.setWindowIcon(icon)
@@ -22,7 +22,7 @@ class Ui_msg_dialog(object):
         self.background_img_label.setPixmap(QtGui.QPixmap("../images/background users.jpg"))
         self.background_img_label.setObjectName("background_img_label")
         self.msg_label = QtWidgets.QLabel(msg_dialog)
-        self.msg_label.setGeometry(QtCore.QRect(10, 140, 381, 31))
+        self.msg_label.setGeometry(QtCore.QRect(10, 110, 331, 51))
         font = QtGui.QFont()
         font.setPointSize(14)
         self.msg_label.setFont(font)
